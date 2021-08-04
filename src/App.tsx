@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, useParams} from 'react-router-dom'
-import { Admin, Movies, Home} from './pages' 
-import { NavBar }  from './components'
+import { Admin, Movies, Home, Categories } from './pages' 
+import { NavBar, Category}  from './components'
 function App() {
   return (
     <Router>
@@ -19,6 +19,10 @@ function App() {
           <Switch>
             <Route path="/movies/:id" component={Movie} />
             <Route path="/movies" component={Movies} />
+            <Route exact path="/by-category" component={Categories}/>
+            <Route exact path="/by-category/drama" render={props=> <Category {...props} title={`Drama`} />} />
+            <Route exact path="/by-category/comedy" render={props=> <Category {...props} title={`Comedy`} />} />
+
             <Route path="/admin" component={Admin} />
             <Route path="/" component={Home} />
           </Switch>
