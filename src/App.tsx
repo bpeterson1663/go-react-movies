@@ -1,7 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route, useParams} from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { Admin, Movies, Home, Categories } from './pages' 
-import { NavBar, Category}  from './components'
+import { NavBar, Category, Movie }  from './components'
 function App() {
   return (
     <Router>
@@ -32,14 +32,6 @@ function App() {
     </Router>
 
   );
-}
-
-interface MovieT {
-  id: string
-}
-function Movie() {
-  const { id } = useParams<MovieT>()
-  return <h2>Movie ID: {id} </h2>
 }
 
 export default App;
