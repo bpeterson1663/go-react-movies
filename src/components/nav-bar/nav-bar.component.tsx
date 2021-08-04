@@ -11,6 +11,9 @@ export default function NavBar(): JSX.Element {
                     <Link to="/movies">Movies</Link>
                 </li>
                 <li className="list-group-item">
+                    <Link to="/by-category">Categories</Link>
+                </li>
+                <li className="list-group-item">
                     <Link to="/admin">Manage Catalogue</Link>
                 </li>
             </ul>
