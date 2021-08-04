@@ -1,4 +1,5 @@
 import React, { useEffect, useState} from 'react'
+import { Link } from 'react-router-dom'
 interface MovieT {
     id: number,
     title: string,
@@ -20,7 +21,7 @@ export default function Movies(): JSX.Element {
           <ul>
               {movies.map( m => (
                   <li key={m.id}>
-                      {m.title}
+                      <Link to={`/movies/${m.id}`}>{m.title}</Link>
                   </li>
               ))}
           </ul>

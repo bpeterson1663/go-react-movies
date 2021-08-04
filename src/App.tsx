@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route} from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, useParams} from 'react-router-dom'
 import { Admin, Movies, Home} from './pages' 
 import { NavBar }  from './components'
 function App() {
@@ -17,6 +17,7 @@ function App() {
         </div>
         <div className="col-md-10">
           <Switch>
+            <Route path="/movies/:id" component={Movie} />
             <Route path="/movies" component={Movies} />
             <Route path="/admin" component={Admin} />
             <Route path="/" component={Home} />
@@ -27,6 +28,14 @@ function App() {
     </Router>
 
   );
+}
+
+interface MovieT {
+  id: string
+}
+function Movie() {
+  const { id } = useParams<MovieT>()
+  return <h2>Movie ID: {id} </h2>
 }
 
 export default App;
