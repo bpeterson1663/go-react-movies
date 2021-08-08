@@ -35,18 +35,23 @@ export default function Genres() {
           {fetchStatus === 'pending' && <h3>Loading...</h3>}
           {fetchStatus === 'error' && <h3>{error}</h3>}
           {fetchStatus === 'success' && 
-            <ul>
+            <div className="list-group" >
                 {genres.map( genre => (
-                    <li key={genre.id}>
-                        <Link to={{
+                    <Link
+                      key={genre.id}
+                      className="list-group-item list-group-item-action" 
+                      to={{
                           pathname: `/genre/${genre.id}`,
                           state: {
                             genreName: genre.genreName
                           }
-                        }}>{genre.genreName}</Link>
-                    </li>
+                        }}
+                      >
+                      {genre.genreName}
+                      
+                    </Link>
                 ))}
-            </ul>
+            </div>
           }
         </>
     )
