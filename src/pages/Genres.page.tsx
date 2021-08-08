@@ -38,7 +38,12 @@ export default function Genres() {
             <ul>
                 {genres.map( genre => (
                     <li key={genre.id}>
-                        <Link to={`/genre/${genre.id}`}>{genre.genreName}</Link>
+                        <Link to={{
+                          pathname: `/genre/${genre.id}`,
+                          state: {
+                            genreName: genre.genreName
+                          }
+                        }}>{genre.genreName}</Link>
                     </li>
                 ))}
             </ul>

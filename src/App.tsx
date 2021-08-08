@@ -19,9 +19,9 @@ function App() {
           <Switch>
             <Route path="/movies/:id" component={Movie} />
             <Route path="/movies" component={Movies} />
-            <Route exact path="/by-genre" component={Genres}/>
-            <Route exact path="/by-genre/drama" render={props=> <Genre {...props} title={`Drama`} />} />
-            <Route exact path="/by-genre/comedy" render={props=> <Genre {...props} title={`Comedy`} />} />
+            <Route exact path="/genres" component={Genres}/>
+            <Route path="/genre/:id" component={Genre} />
+
 
             <Route path="/admin" component={Admin} />
             <Route path="/" component={Home} />
