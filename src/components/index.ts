@@ -1,8 +1,8 @@
 import NavBar from './nav-bar/nav-bar.component'
-import Category from './category/category.component'
+import Genre from './genre/genre.component'
 import Movie from './movie/movie.component'
 export {
     NavBar,
-    Category,
+    Genre,
     Movie
 }
