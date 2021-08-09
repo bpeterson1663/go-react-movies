@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
-import { MovieT } from '../../constants'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router'
+import { MovieT, FetchStatusT } from '../../constants'
 import { FormInput, FormSelect, FormTextarea } from '../../components'
 import './add-movie.styles.css'
-
+interface AddMovieParams {
+  id: string
+}
 const DEFAULT_MOVIE: MovieT = {
   id: '0',
   title: '',
@@ -13,8 +16,37 @@ const DEFAULT_MOVIE: MovieT = {
   description: '',
   genres: [],
 }
-export default function AddMovie() {
+export default function AddMovie(): JSX.Element {
   const [movie, setMovie] = useState<MovieT>(DEFAULT_MOVIE)
+  const [fetchStatus, setFetchStatus] = useState<FetchStatusT>('idle')
+  const [error, setError] = useState('')
+  const { id } = useParams<AddMovieParams>()
+  const getMovie = async (movieId: number) => {
+    if (movieId > 0) {
+      setFetchStatus('pending')
+      try {
+        const response = await fetch(`http://localhost:4000/v1/movie/${movieId}`)
+        if (response.status !== 200) {
+          setFetchStatus('error')
+          setError(`An Error Occurred: ${response.statusText}`)
+        }
+        const { movie } = await response.json()
+        const releaseDate = new Date(movie.releaseDate)
+        movie.releaseDate = releaseDate.toISOString().split('T')[0]
+        setMovie(movie)
+        setFetchStatus('success')
+      } catch (err) {
+        setFetchStatus('error')
+      }
+    } else {
+      setMovie(DEFAULT_MOVIE)
+      setFetchStatus('success')
+    }
+  }
+  useEffect(() => {
+    getMovie(parseInt(id))
+  }, [id])
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let value = event.target.value
     let name = event.target.name
@@ -40,55 +72,64 @@ export default function AddMovie() {
     <>
       <h2>Add/Edit Movie</h2>
       <hr />
-      <form onSubmit={handleSubmit}>
-        <FormInput label="" type="hidden" name="id" id="id" value={movie.id} handleChange={handleInputChange} />
-        <FormInput 
+      {fetchStatus === 'pending' && <h3>Loading...</h3>}
+      {fetchStatus === 'error' && <h3>{error}</h3>}
+      {fetchStatus === 'success' && (
+        <form onSubmit={handleSubmit}>
+          <FormInput label="" type="hidden" name="id" id="id" value={movie.id} handleChange={handleInputChange} />
+          <FormInput
             label="Title"
             id="title"
             name="title"
             type="text"
             value={movie.title}
-            handleChange={handleInputChange} />
-        <FormInput 
+            handleChange={handleInputChange}
+          />
+          <FormInput
             label="Release Date"
             id="releaseDate"
             name="releaseDate"
             type="text"
             value={movie.releaseDate}
-            handleChange={handleInputChange} />
-        <FormInput 
+            handleChange={handleInputChange}
+          />
+          <FormInput
             label="Runtime"
             id="runtime"
             name="runtime"
             type="number"
             value={movie.runtime}
-            handleChange={handleInputChange} />
-        <FormSelect 
+            handleChange={handleInputChange}
+          />
+          <FormSelect
             label="MPAA Rating"
             id="mpaaRating"
             value={movie.mpaaRating}
             name="mpaaRating"
-            options={["G", "PG", "PG-13", "R", "NC17"]}
-            handleChange={handleSelectChange} />
-        <FormInput 
+            options={['G', 'PG', 'PG-13', 'R', 'NC17']}
+            handleChange={handleSelectChange}
+          />
+          <FormInput
             label="Rating"
             id="rating"
             name="rating"
             type="text"
             value={movie.rating}
-            handleChange={handleInputChange} />
-        <FormTextarea 
+            handleChange={handleInputChange}
+          />
+          <FormTextarea
             label="Description"
             id="description"
             name="description"
             rows={3}
             handleChange={handleTextareaChange}
             value={movie.description}
-            />
-        <hr />
+          />
+          <hr />
 
-        <button className="btn btn-primary">Save</button>
-      </form>
+          <button className="btn btn-primary">Save</button>
+        </form>
+      )}
     </>
   )
 }

@@ -22,7 +22,7 @@ function App() {
               <Route exact path="/genres" component={Genres} />
               <Route path="/genre/:id" component={Genre} />
 
-              <Route path="/admin/Add" component={AddMovie} />
+              <Route path="/admin/movie/:id" component={AddMovie} />
               <Route path="/admin" component={Admin} />
               <Route path="/" component={Home} />
             </Switch>
