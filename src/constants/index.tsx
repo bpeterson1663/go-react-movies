@@ -5,10 +5,15 @@ export interface GenreT{
     genreName: string,
 }
 
+type MPAARatingT = 'G' | 'PG' | 'PG-13' | 'R' | 'MC17'
+
 export interface MovieT {
     id: string,
     title: string,
     runtime: number,
     genres: GenreT[],
-    mpaaRating: string,
+    mpaaRating: MPAARatingT,
+    releaseDate: string,
+    rating: string,
+    description: string,
 }
