@@ -65,8 +65,15 @@ export default function AddMovie(): JSX.Element {
     setMovie((values) => ({ ...values, [name]: value }))
   }
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
+    try {
+      const response = await fetch('http://localhost:4000/v1/admin/editmovie', {
+        method: 'POST',
+        body: JSON.stringify(movie),
+      })
+      console.log(response)
+    } catch (err) {}
   }
   return (
     <>
