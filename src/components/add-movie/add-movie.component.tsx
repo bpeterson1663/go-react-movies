@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import { MovieT, FetchStatusT } from '../../constants'
-import { FormInput, FormSelect, FormTextarea } from '../../components'
+import { MovieT, FetchStatusT, AlertT } from '../../constants'
+import { FormInput, FormSelect, FormTextarea, Alert } from '../../components'
 import './add-movie.styles.css'
+
 interface AddMovieParams {
   id: string
 }
@@ -20,6 +21,7 @@ export default function AddMovie(): JSX.Element {
   const [movie, setMovie] = useState<MovieT>(DEFAULT_MOVIE)
   const [fetchStatus, setFetchStatus] = useState<FetchStatusT>('idle')
   const [error, setError] = useState('')
+  const [alert, setAlert] = useState<AlertT>({ alertType: 'd-none', message: '' })
   const { id } = useParams<AddMovieParams>()
   const getMovie = async (movieId: number) => {
     if (movieId > 0) {
@@ -72,12 +74,19 @@ export default function AddMovie(): JSX.Element {
         method: 'POST',
         body: JSON.stringify(movie),
       })
-      console.log(response)
-    } catch (err) {}
+      if (response.status !== 200) {
+        setAlert({ alertType: 'alert-danger', message: response.statusText })
+      } else {
+        setAlert({ alertType: 'alert-success', message: 'Changes saved!' })
+      }
+    } catch (err) {
+      setAlert({ alertType: 'alert-danger', message: err.message })
+    }
   }
   return (
     <>
       <h2>Add/Edit Movie</h2>
+      <Alert alertType={alert.alertType} message={alert.message} />
       <hr />
       {fetchStatus === 'pending' && <h3>Loading...</h3>}
       {fetchStatus === 'error' && <h3>{error}</h3>}
