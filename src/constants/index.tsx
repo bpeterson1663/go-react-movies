@@ -17,3 +17,8 @@ export interface MovieT {
   rating: string
   description: string
 }
+
+export interface AlertT {
+  alertType: 'd-none' | 'alert-success' | 'alert-danger'
+  message: string
+}
