@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
+import { Link, useHistory } from 'react-router-dom'
 import { MovieT, FetchStatusT, AlertT } from '../../constants'
 import { FormInput, FormSelect, FormTextarea, Alert } from '../../components'
 import './add-movie.styles.css'
@@ -11,7 +12,7 @@ const DEFAULT_MOVIE: MovieT = {
   id: '0',
   title: '',
   releaseDate: '',
-  runtime: 0,
+  runtime: '',
   mpaaRating: 'G',
   rating: '',
   description: '',
@@ -23,6 +24,7 @@ export default function AddMovie(): JSX.Element {
   const [error, setError] = useState('')
   const [alert, setAlert] = useState<AlertT>({ alertType: 'd-none', message: '' })
   const { id } = useParams<AddMovieParams>()
+  let history = useHistory()
   const getMovie = async (movieId: number) => {
     if (movieId > 0) {
       setFetchStatus('pending')
@@ -69,10 +71,12 @@ export default function AddMovie(): JSX.Element {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
+    const { id, runtime, rating } = movie
+    const request = { ...movie, id: parseInt(id), runtime: parseInt(runtime), rating: parseInt(rating) }
     try {
       const response = await fetch('http://localhost:4000/v1/admin/editmovie', {
         method: 'POST',
-        body: JSON.stringify(movie),
+        body: JSON.stringify(request),
       })
       if (response.status !== 200) {
         setAlert({ alertType: 'alert-danger', message: response.statusText })
@@ -83,6 +87,25 @@ export default function AddMovie(): JSX.Element {
       setAlert({ alertType: 'alert-danger', message: err.message })
     }
   }
+
+  const confirmDelete = async () => {
+    const confirm = window.confirm('Are you sure you want to delete this movie?')
+    if (confirm) {
+      try {
+        const response = await fetch(`http://localhost:4000/v1/admin/movie/${id}`, {
+          method: 'DELETE',
+        })
+        if (response.status !== 200) {
+          setAlert({ alertType: 'alert-danger', message: response.statusText })
+        } else {
+          history.push('/admin')
+        }
+      } catch (err) {
+        setAlert({ alertType: 'alert-danger', message: err.message })
+      }
+    }
+  }
+
   return (
     <>
       <h2>Add/Edit Movie</h2>
@@ -144,6 +167,14 @@ export default function AddMovie(): JSX.Element {
           <hr />
 
           <button className="btn btn-primary">Save</button>
+          <Link to="/admin" className="btn btn-warning ms-1">
+            Cancel
+          </Link>
+          {movie.id !== '0' && (
+            <a href="#!" onClick={confirmDelete} className="btn btn-danger ms-1">
+              Delete
+            </a>
+          )}
         </form>
       )}
     </>
