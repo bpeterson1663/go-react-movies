@@ -10,13 +10,29 @@ interface FormInputT {
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export default function FormInput({ handleChange, value, id, name, label, type, required = false }: FormInputT): JSX.Element {
+export default function FormInput({
+  handleChange,
+  value,
+  id,
+  name,
+  label,
+  type,
+  required = false,
+}: FormInputT): JSX.Element {
   return (
     <div className="mb-3">
       <label htmlFor={label} className="form-label">
         {label}
       </label>
-      <input type={type} required={required} className="form-control" id={id} name={name} value={value} onChange={handleChange} />
+      <input
+        type={type}
+        required={required}
+        className="form-control"
+        id={id}
+        name={name}
+        value={value}
+        onChange={handleChange}
+      />
     </div>
   )
 }
