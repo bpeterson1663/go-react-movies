@@ -4,8 +4,8 @@ interface FormInputT {
   label: string
   name: string
   id: string
-  value: string | number
-  type: 'text' | 'number' | 'hidden'
+  value?: string | number
+  type: 'text' | 'number' | 'hidden' | 'email' | 'password'
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
