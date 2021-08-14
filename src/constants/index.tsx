@@ -22,3 +22,8 @@ export interface AlertT {
   alertType: 'd-none' | 'alert-success' | 'alert-danger'
   message: string
 }
+
+export interface UserAuthT {
+  email: string
+  password: string
+}
