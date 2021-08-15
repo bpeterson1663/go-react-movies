@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useHistory } from 'react-router'
 import { Alert, FormInput } from '../components'
 import { AlertT, UserAuthT } from '../constants'
-interface LoginT {
-  handleJWTChange: (jwt: string) => void
-}
-export default function Login({ handleJWTChange }: LoginT) {
+import AuthContext from '../context/auth-context'
+
+export default function Login() {
   const [userAuth, setUserAuth] = useState<UserAuthT>({} as UserAuthT)
   const [alert, setAlert] = useState<AlertT>({ alertType: 'd-none', message: '' })
   const history = useHistory()
+  const auth = useContext(AuthContext)
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let value = event.target.value
     let name = event.target.name
@@ -27,7 +28,7 @@ export default function Login({ handleJWTChange }: LoginT) {
       } else {
         const { token } = await response.json()
         setAlert({ alertType: 'alert-success', message: 'Login Success!' })
-        handleJWTChange(token)
+        auth.handleJWTChange(token)
         history.push('/')
       }
     } catch (err) {

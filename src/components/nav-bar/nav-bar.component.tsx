@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
-export default function NavBar({ jwt }: { jwt: string }): JSX.Element {
+import AuthContext from '../../context/auth-context'
+
+export default function NavBar(): JSX.Element {
+  const auth = useContext(AuthContext)
+
   return (
     <nav>
       <ul className="list-group">
@@ -13,7 +17,7 @@ export default function NavBar({ jwt }: { jwt: string }): JSX.Element {
         <li className="list-group-item">
           <Link to="/genres">Genres</Link>
         </li>
-        {jwt !== '' && (
+        {auth.jwt !== '' && (
           <>
             <li className="list-group-item">
               <Link to="/admin/movie/0">Add Movie</Link>

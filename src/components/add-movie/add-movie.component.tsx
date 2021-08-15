@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { Link, useHistory } from 'react-router-dom'
 import { MovieT, FetchStatusT, AlertT } from '../../constants'
 import { FormInput, FormSelect, FormTextarea, Alert } from '../../components'
+import AuthContext from '../../context/auth-context'
 import './add-movie.styles.css'
 
 interface AddMovieParams {
@@ -23,6 +24,7 @@ export default function AddMovie(): JSX.Element {
   const [fetchStatus, setFetchStatus] = useState<FetchStatusT>('idle')
   const [error, setError] = useState('')
   const [alert, setAlert] = useState<AlertT>({ alertType: 'd-none', message: '' })
+  const auth = useContext(AuthContext)
   const { id } = useParams<AddMovieParams>()
   let history = useHistory()
   const getMovie = async (movieId: number) => {
@@ -74,9 +76,13 @@ export default function AddMovie(): JSX.Element {
     const { id, runtime, rating } = movie
     const request = { ...movie, id: parseInt(id), runtime: parseInt(runtime), rating: parseInt(rating) }
     try {
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      headers.append('Authorization', 'Bearer ' + auth.jwt)
       const response = await fetch('http://localhost:4000/v1/admin/editmovie', {
         method: 'POST',
         body: JSON.stringify(request),
+        headers,
       })
       if (response.status !== 200) {
         setAlert({ alertType: 'alert-danger', message: response.statusText })
@@ -90,10 +96,15 @@ export default function AddMovie(): JSX.Element {
 
   const confirmDelete = async () => {
     const confirm = window.confirm('Are you sure you want to delete this movie?')
+
     if (confirm) {
       try {
+        const headers = new Headers()
+        headers.append('Content-Type', 'application/json')
+        headers.append('Authorization', 'Bearer ' + auth.jwt)
         const response = await fetch(`http://localhost:4000/v1/admin/movie/${id}`, {
           method: 'DELETE',
+          headers,
         })
         if (response.status !== 200) {
           setAlert({ alertType: 'alert-danger', message: response.statusText })
