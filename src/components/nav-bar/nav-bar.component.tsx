@@ -17,6 +17,9 @@ export default function NavBar(): JSX.Element {
         <li className="list-group-item">
           <Link to="/genres">Genres</Link>
         </li>
+        <li className="list-group-item">
+          <Link to="/search">Search</Link>
+        </li>
         {auth.jwt !== '' && (
           <>
             <li className="list-group-item">
