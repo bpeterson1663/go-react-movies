@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const FETCH_MOVIES = gql`
-  {
-    list {
+  query SearchMovies($titleContains: String!) {
+    search(titleContains: $titleContains) {
       id
       title
     }
