@@ -3,6 +3,7 @@ import { useHistory } from 'react-router'
 import { Alert, FormInput } from '../components'
 import { AlertT, UserAuthT } from '../constants'
 import AuthContext from '../context/auth-context'
+import { signIn } from '../api'
 
 export default function Login() {
   const [userAuth, setUserAuth] = useState<UserAuthT>({} as UserAuthT)
@@ -19,18 +20,10 @@ export default function Login() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     try {
-      const response = await fetch('http://localhost:4000/v1/signin', {
-        method: 'POST',
-        body: JSON.stringify(userAuth),
-      })
-      if (response.status !== 200) {
-        setAlert({ alertType: 'alert-danger', message: response.statusText })
-      } else {
-        const { token } = await response.json()
-        setAlert({ alertType: 'alert-success', message: 'Login Success!' })
-        auth.handleJWTChange(token)
-        history.push('/')
-      }
+      const { token } = await signIn(userAuth)
+      setAlert({ alertType: 'alert-success', message: 'Login Success!' })
+      auth.handleJWTChange(token)
+      history.push('/')
     } catch (err) {
       setAlert({ alertType: 'alert-danger', message: err.message })
     }

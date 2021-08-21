@@ -3,6 +3,7 @@ import { useParams } from 'react-router'
 import { Link, useHistory } from 'react-router-dom'
 import { MovieT, FetchStatusT, AlertT } from '../../constants'
 import { FormInput, FormSelect, FormTextarea, Alert } from '../../components'
+import { getMovieWithId, addEditMovie, deleteMovie } from '../../api'
 import AuthContext from '../../context/auth-context'
 import './add-movie.styles.css'
 
@@ -10,12 +11,12 @@ interface AddMovieParams {
   id: string
 }
 const DEFAULT_MOVIE: MovieT = {
-  id: '0',
+  id: 0,
   title: '',
   releaseDate: '',
-  runtime: '',
+  runtime: 0,
   mpaaRating: 'G',
-  rating: '',
+  rating: 5,
   description: '',
   genres: [],
 }
@@ -31,18 +32,14 @@ export default function AddMovie(): JSX.Element {
     if (movieId > 0) {
       setFetchStatus('pending')
       try {
-        const response = await fetch(`http://localhost:4000/v1/movie/${movieId}`)
-        if (response.status !== 200) {
-          setFetchStatus('error')
-          setError(`An Error Occurred: ${response.statusText}`)
-        }
-        const { movie } = await response.json()
+        const { movie } = await getMovieWithId(movieId)
         const releaseDate = new Date(movie.releaseDate)
         movie.releaseDate = releaseDate.toISOString().split('T')[0]
         setMovie(movie)
         setFetchStatus('success')
       } catch (err) {
         setFetchStatus('error')
+        setError(`An Error Occurred: ${err}`)
       }
     } else {
       setMovie(DEFAULT_MOVIE)
@@ -73,22 +70,9 @@ export default function AddMovie(): JSX.Element {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    const { id, runtime, rating } = movie
-    const request = { ...movie, id: parseInt(id), runtime: parseInt(runtime), rating: parseInt(rating) }
     try {
-      const headers = new Headers()
-      headers.append('Content-Type', 'application/json')
-      headers.append('Authorization', 'Bearer ' + auth.jwt)
-      const response = await fetch('http://localhost:4000/v1/admin/editmovie', {
-        method: 'POST',
-        body: JSON.stringify(request),
-        headers,
-      })
-      if (response.status !== 200) {
-        setAlert({ alertType: 'alert-danger', message: response.statusText })
-      } else {
-        setAlert({ alertType: 'alert-success', message: 'Changes saved!' })
-      }
+      await addEditMovie(auth.jwt, movie)
+      setAlert({ alertType: 'alert-success', message: 'Changes saved!' })
     } catch (err) {
       setAlert({ alertType: 'alert-danger', message: err.message })
     }
@@ -99,18 +83,8 @@ export default function AddMovie(): JSX.Element {
 
     if (confirm) {
       try {
-        const headers = new Headers()
-        headers.append('Content-Type', 'application/json')
-        headers.append('Authorization', 'Bearer ' + auth.jwt)
-        const response = await fetch(`http://localhost:4000/v1/admin/movie/${id}`, {
-          method: 'DELETE',
-          headers,
-        })
-        if (response.status !== 200) {
-          setAlert({ alertType: 'alert-danger', message: response.statusText })
-        } else {
-          history.push('/admin')
-        }
+        await deleteMovie(auth.jwt, id)
+        history.push('/admin')
       } catch (err) {
         setAlert({ alertType: 'alert-danger', message: err.message })
       }
@@ -181,7 +155,7 @@ export default function AddMovie(): JSX.Element {
           <Link to="/admin" className="btn btn-warning ms-1">
             Cancel
           </Link>
-          {movie.id !== '0' && (
+          {movie.id !== 0 && (
             <a href="#!" onClick={confirmDelete} className="btn btn-danger ms-1">
               Delete
             </a>

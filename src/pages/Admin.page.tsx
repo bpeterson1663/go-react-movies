@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FetchStatusT } from '../constants'
-
+import { getMovieList } from '../api'
 interface MovieT {
   id: number
   title: string
@@ -15,16 +15,12 @@ export default function Admin(): JSX.Element {
   const getMovies = async () => {
     setFetchStatus('pending')
     try {
-      const response = await fetch('http://localhost:4000/v1/movies')
-      if (response.status !== 200) {
-        setFetchStatus('error')
-        setError(`An Error Occurred: ${response.statusText}`)
-      }
-      const { movies } = await response.json()
+      const { movies } = await getMovieList()
       setFetchStatus('success')
       setMovies(movies)
     } catch (err) {
       setFetchStatus('error')
+      setError(`An error has occured: ${err}`)
     }
   }
   useEffect(() => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useParams, useLocation } from 'react-router'
 import { FetchStatusT, MovieT } from '../../constants'
-
+import { getMoviesByGenreId } from '../../api'
 interface GenreParams {
   id: string
 }
@@ -20,18 +20,15 @@ export default function Genre(): JSX.Element {
   const getMovies = async (genreId: string) => {
     setFetchStatus('pending')
     try {
-      const response = await fetch(`http://localhost:4000/v1/movies/${genreId}`)
-      if (response.status !== 200) {
-        setFetchStatus('error')
-        setError(`An Error Occurred: ${response.statusText}`)
-      }
-      const { movies } = await response.json()
+      const { movies } = await getMoviesByGenreId(genreId)
+
       if (movies.length) {
         setMovies(movies)
       }
       setFetchStatus('success')
     } catch (err) {
       setFetchStatus('error')
+      setError(`An Error Occurred: ${err}`)
     }
   }
   useEffect(() => {

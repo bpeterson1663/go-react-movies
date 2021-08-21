@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FetchStatusT } from '../constants'
+import { getGenresList } from '../api'
 interface GenreT {
   id: string
   genreName: string
@@ -13,16 +14,12 @@ export default function Genres() {
   const getGenres = async () => {
     setFetchStatus('pending')
     try {
-      const response = await fetch(`http://localhost:4000/v1/genres`)
-      if (response.status !== 200) {
-        setFetchStatus('error')
-        setError(`An Error Occurred: ${response.statusText}`)
-      }
-      const { genres } = await response.json()
+      const { genres } = await getGenresList()
       setGenres(genres)
       setFetchStatus('success')
     } catch (err) {
       setFetchStatus('error')
+      setError(`An Error Occurred: ${err}`)
     }
   }
 

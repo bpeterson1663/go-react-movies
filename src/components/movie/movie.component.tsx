@@ -1,23 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import { FetchStatusT } from '../../constants'
-
+import { FetchStatusT, MovieT } from '../../constants'
+import { getMovieWithId } from '../../api'
 interface MovieParams {
   id: string
 }
 
-interface GenreT {
-  id: string
-  genreName: string
-}
-
-interface MovieT {
-  id: string
-  title: string
-  runtime: number
-  genres: GenreT[]
-  mpaaRating: string
-}
 export default function Movie(): JSX.Element {
   const [movie, setMovie] = useState<MovieT>({} as MovieT)
   const [fetchStatus, setFetchStatus] = useState<FetchStatusT>('idle')
@@ -26,16 +14,12 @@ export default function Movie(): JSX.Element {
   const getMovie = async (id: string) => {
     setFetchStatus('pending')
     try {
-      const response = await fetch(`http://localhost:4000/v1/movie/${id}`)
-      if (response.status !== 200) {
-        setFetchStatus('error')
-        setError(`An Error Occurred: ${response.statusText}`)
-      }
-      const { movie } = await response.json()
+      const { movie } = await getMovieWithId(parseInt(id))
       setMovie(movie)
       setFetchStatus('success')
     } catch (err) {
       setFetchStatus('error')
+      setError(`An error has occured: ${err}`)
     }
   }
   useEffect(() => {

@@ -4,9 +4,10 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import { Admin, Movies, Home, Genres, Login, Search } from './pages'
 import { NavBar, Genre, Movie, AddMovie } from './components'
+import { uri } from './api'
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/v1/graphql',
+  uri: `${uri}/v1/graphql`,
   cache: new InMemoryCache(),
 })
 
