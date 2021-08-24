@@ -10,7 +10,7 @@ interface ResponseType {
   genres: GenreT[]
 }
 export const uri =
-  process.env.NODE_ENV === 'production' ? 'https://go-movies-backend.herokuapp.com' : 'http://localhost:4000'
+  process.env.REACT_APP_MODE === 'production' ? 'https://go-movies-backend.herokuapp.com' : 'http://localhost:4000'
 
 export const getMovieWithId = async (movieId: number): Promise<ResponseType> =>
   await fetch(`${uri}/v1/movie/${movieId}`).then((res) => res.json())
