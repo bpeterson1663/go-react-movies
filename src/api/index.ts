@@ -44,7 +44,7 @@ export const deleteMovie = async (jwt: string, id: string) => {
 }
 
 export const signIn = async (userAuth: UserAuthT): Promise<{ token: string }> => {
-  return await fetch('http://localhost:4000/v1/signin', {
+  return await fetch(`${uri}/v1/signin`, {
     method: 'POST',
     body: JSON.stringify(userAuth),
   }).then((res) => res.json())
